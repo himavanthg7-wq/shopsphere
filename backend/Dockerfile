@@ -19,6 +19,7 @@ COPY --from=builder /app/target/*.jar app.jar
 
 # Render assigns port dynamically via $PORT
 ENV PORT=8080
+ENV JAVA_OPTS="-Xmx320m -Xms128m -XX:+UseSerialGC -Xss512k"
 EXPOSE 8080
 
-ENTRYPOINT ["sh", "-c", "java -Dserver.port=${PORT} -jar app.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Dserver.port=${PORT} -jar app.jar"]
