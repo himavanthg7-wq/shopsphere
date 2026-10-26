@@ -106,6 +106,10 @@ export default function AdminCategoriesPage() {
                   <img
                     src={c.imageUrl || 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=100'}
                     alt=""
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=100';
+                    }}
                     style={{ width: 44, height: 44, borderRadius: 8, objectFit: 'cover' }}
                   />
                 </td>

@@ -118,6 +118,10 @@ export default function HomePage() {
               <img
                 src={cat.imageUrl || 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=300'}
                 alt={cat.name}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=300';
+                }}
                 style={{ width: 80, height: 80, borderRadius: 9999, objectFit: 'cover' }}
               />
               <div>

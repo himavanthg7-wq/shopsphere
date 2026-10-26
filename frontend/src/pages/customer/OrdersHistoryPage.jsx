@@ -72,8 +72,12 @@ export default function OrdersHistoryPage() {
                 {ord.items?.map((it) => (
                   <div key={it.id} className="flex items-center gap-2" style={{ backgroundColor: '#f8fafc', padding: '6px 12px', borderRadius: 8 }}>
                     <img
-                      src={it.productImage || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100'}
+                      src={it.productImage || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=100'}
                       alt=""
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=100';
+                      }}
                       style={{ width: 36, height: 36, borderRadius: 6, objectFit: 'cover' }}
                     />
                     <div style={{ fontSize: 13, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

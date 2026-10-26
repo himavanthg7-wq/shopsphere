@@ -111,7 +111,7 @@ public class DataInitializer implements CommandLineRunner {
         Brand adidas = brandRepository.save(new Brand("Adidas", "adidas", "https://images.unsplash.com/photo-1518002171953-a080ee817e1f?w=200"));
         Brand logitech = brandRepository.save(new Brand("Logitech", "logitech", "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=200"));
         Brand philips = brandRepository.save(new Brand("Philips", "philips", "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=200"));
-        Brand oreilly = brandRepository.save(new Brand("O'Reilly", "oreilly", "https://images.unsplash.com/photo-1532012164546-f432f2e30018?w=200"));
+        Brand oreilly = brandRepository.save(new Brand("O'Reilly", "oreilly", "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=200"));
 
         createProduct("Sony WH-1000XM5 Wireless Headphones", "sony-wh-1000xm5-headphones",
                 "Industry-leading noise canceling with two processors and 8 microphones for unprecedented noise cancellation. Crystal clear hands-free calling.",
@@ -156,7 +156,9 @@ public class DataInitializer implements CommandLineRunner {
         createProduct("Designing Data-Intensive Applications", "designing-data-intensive-applications",
                 "The definitive guide to distributed data systems, reliability, scalability, and maintainability by Martin Kleppmann.",
                 new BigDecimal("2450.00"), new BigDecimal("15.00"), "BK-DDIA-OREIL", oreilly, books, true, new BigDecimal("4.95"), 53, 50, 10,
-                "https://images.unsplash.com/photo-1532012164546-f432f2e30018?w=800");
+                "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=800",
+                "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800",
+                "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800");
 
         createProduct("Clean Architecture by Robert C. Martin", "clean-architecture-uncle-bob",
                 "A Craftsman's Guide to Software Structure and Design. Essential reading for every professional full-stack engineer.",
@@ -190,7 +192,7 @@ public class DataInitializer implements CommandLineRunner {
 
     private void createProduct(String name, String slug, String description, BigDecimal price, BigDecimal discountPercent,
                                String sku, Brand brand, Category category, boolean isFeatured, BigDecimal ratingAvg,
-                               int ratingCount, int quantity, int reorderLevel, String imageUrl) {
+                               int ratingCount, int quantity, int reorderLevel, String imageUrl, String... additionalImageUrls) {
         Product p = new Product();
         p.setName(name);
         p.setSlug(slug);
@@ -211,5 +213,13 @@ public class DataInitializer implements CommandLineRunner {
 
         ProductImage img = new ProductImage(p, imageUrl, true);
         productImageRepository.save(img);
+
+        if (additionalImageUrls != null) {
+            for (String extraUrl : additionalImageUrls) {
+                if (extraUrl != null && !extraUrl.isBlank()) {
+                    productImageRepository.save(new ProductImage(p, extraUrl, false));
+                }
+            }
+        }
     }
 }

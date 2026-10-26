@@ -129,8 +129,12 @@ export default function OrderDetailsPage() {
                     <td>
                       <div className="flex items-center gap-3">
                         <img
-                          src={it.productImage || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100'}
+                          src={it.productImage || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=100'}
                           alt=""
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=100';
+                          }}
                           style={{ width: 44, height: 44, borderRadius: 6, objectFit: 'cover' }}
                         />
                         <Link to={`/products/${it.productId}`} style={{ fontWeight: 600, color: '#0f172a' }}>

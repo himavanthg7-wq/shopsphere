@@ -98,8 +98,12 @@ export default function ProductCard({ product }) {
       {/* Product Image */}
       <Link to={`/products/${product.id}`} style={{ display: 'block', backgroundColor: '#f8fafc', overflow: 'hidden' }}>
         <img
-          src={product.primaryImageUrl || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600'}
+          src={product.primaryImageUrl || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600'}
           alt={product.name}
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600';
+          }}
           style={{
             width: '100%',
             height: 220,

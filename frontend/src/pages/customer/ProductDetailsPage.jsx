@@ -190,6 +190,10 @@ export default function ProductDetailsPage() {
             <img
               src={selectedImage}
               alt={product.name}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600';
+              }}
               style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }}
             />
           </div>
@@ -211,7 +215,15 @@ export default function ProductDetailsPage() {
                     height: 72,
                   }}
                 >
-                  <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img
+                    src={img}
+                    alt=""
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=200';
+                    }}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
                 </button>
               ))}
             </div>

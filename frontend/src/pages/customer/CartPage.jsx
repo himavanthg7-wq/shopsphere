@@ -109,8 +109,12 @@ export default function CartPage() {
                   }}
                 >
                   <img
-                    src={item.productImage || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200'}
+                    src={item.productImage || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=200'}
                     alt={item.productName}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=200';
+                    }}
                     style={{ width: 80, height: 80, borderRadius: 8, objectFit: 'cover' }}
                   />
 

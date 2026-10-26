@@ -175,8 +175,12 @@ export default function AdminProductsPage() {
                   <td>
                     <div className="flex items-center gap-3">
                       <img
-                        src={p.primaryImageUrl || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=80'}
+                        src={p.primaryImageUrl || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=80'}
                         alt=""
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=80';
+                        }}
                         style={{ width: 40, height: 40, borderRadius: 6, objectFit: 'cover' }}
                       />
                       <strong style={{ fontSize: 14 }}>{p.name}</strong>
