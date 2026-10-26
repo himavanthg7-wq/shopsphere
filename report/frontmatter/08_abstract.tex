@@ -1,0 +1,24 @@
+\newpage
+\thispagestyle{fancy}
+\begin{center}
+    {\fontsize{16}{20}\selectfont \textbf{ABSTRACT}}\\[0.8cm]
+\end{center}
+
+\noindent Modern digital commerce platforms demand high responsiveness, resilient transactional integrity, robust data security, and comprehensive administrative observability. Conventional monolithic implementations frequently suffer from tight architectural coupling, susceptibility to inventory race conditions, inconsistent cart calculations, and fragile client-side payment handling. To address these industrial challenges, this internship project introduces \textbf{ShopSphere}—an enterprise-grade, full-stack e-commerce management system engineered using a decoupled 3-tier architecture.
+
+\vspace{0.3cm}
+
+\noindent The presentation layer is constructed with \textbf{React.js 18} and \textbf{Vite}, incorporating \textbf{Redux Toolkit} for predictable state synchronization across carts, wishlists, and authenticated sessions. The frontend features a responsive storefront, dynamic multi-faceted filtering (category, brand, rating, and dynamic price sliders), an instant live search engine, and an itemized shopping cart with automated 18\% GST and shipping calculations. The application backend is built with \textbf{Java 22} and \textbf{Spring Boot 3.3.4}, exposing secure RESTful endpoints governed by \textbf{Spring Security 6} and stateless \textbf{JSON Web Token (JWT)} authentication with \textbf{BCrypt} password salting. Role-Based Access Control (RBAC) strictly separates customer operations from privileged administrative endpoints.
+
+\vspace{0.3cm}
+
+\noindent Data persistence is powered by \textbf{MySQL 8}, architected into 19 relational tables normalized to \textbf{Third Normal Form (3NF)}. The schema incorporates explicit foreign key cascade constraints, indexed query paths, and historical price snapshotting on line items to guarantee financial auditability. Real-world business logic is enforced through declarative Spring \texttt{@Transactional} boundaries:
+\begin{enumerate}[leftmargin=2.0em, topsep=2pt, parsep=0pt]
+    \item \textbf{Verified Purchase Review Gate:} Customers are restricted from reviewing products unless they possess a confirmed and \texttt{DELIVERED} order for that specific item.
+    \item \textbf{Atomic Inventory Decrement:} Prevents overselling race conditions under concurrent checkouts using atomic SQL updates and low-stock sentinel alerts.
+    \item \textbf{Cryptographic Payment Integrity:} Integrates the \textbf{Razorpay} payment gateway with server-side \textbf{HMAC-SHA256} signature verification, guaranteeing that order fulfillment occurs only upon authenticated payment validation.
+\end{enumerate}
+
+\vspace{0.3cm}
+
+\noindent An integrated administrative portal provides executive business intelligence, featuring real-time KPI metrics, monthly sales trend visualizations, order status lifecycle management (\texttt{PLACED} to \texttt{DELIVERED}), and full catalog CRUD capabilities. The complete platform was successfully developed, tested, and validated during the internship at \textbf{Codec Technologies Pvt. Ltd.}, fulfilling all industrial objectives and institutional evaluation benchmarks.

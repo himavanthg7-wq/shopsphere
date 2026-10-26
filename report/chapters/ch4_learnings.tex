@@ -1,0 +1,60 @@
+\chapter{Learning After Internship}
+\label{ch:learnings}
+
+\section{Technical Competencies Acquired}
+The 1-month intensive internship at \textbf{Codec Technologies Pvt. Ltd.} provided deep exposure to enterprise full-stack development, moving far beyond theoretical classroom concepts into practical software engineering. The principal technical competencies acquired include:
+\begin{enumerate}[leftmargin=2.0em]
+    \item \textbf{Reactive Frontend Engineering with React 18 and Vite:} Gained comprehensive mastery of functional component architecture, custom React hooks, declarative routing with React Router v6, and centralized state synchronization using Redux Toolkit. Learned how to optimize client-side bundle size, implement debounced search queries, and manage local storage persistence.
+    \item \textbf{Enterprise Backend Architecture with Java 22 and Spring Boot 3:} Acquired practical proficiency in building modular RESTful microservices. Mastered dependency injection, inversion of control, Spring Data JPA repositories, and declarative transaction management.
+    \item \textbf{Production Security and Stateless Authentication:} Deepened expertise in modern cybersecurity practices by implementing Spring Security 6. Mastered the full lifecycle of JSON Web Tokens (JWT), cryptographic signature generation, and BCrypt adaptive password salting.
+    \item \textbf{Relational Database Engineering and Normalization:} Learned how to architect enterprise databases from conceptual entity-relationship diagrams to fully normalized 3NF schemas in MySQL 8.0. Mastered indexing strategies, foreign key constraints, connection pool tuning with HikariCP, and ACID transaction isolation.
+    \item \textbf{Financial Cryptography and Third-Party Payment Gateways:} Gained practical experience integrating payment gateways (Razorpay) with server-side HMAC-SHA256 signature verification, ensuring transaction integrity and preventing payment manipulation.
+\end{enumerate}
+
+\section{Software Engineering Principles and Design Patterns}
+Throughout the development of ShopSphere, several industry-standard architectural and design patterns were applied:
+\begin{itemize}[leftmargin=2.0em]
+    \item \textbf{Separation of Concerns (SoC):} Maintained strict architectural boundaries between presentation (React), business services (Spring Boot), and persistence (MySQL), ensuring high cohesion and loose coupling.
+    \item \textbf{Data Transfer Object (DTO) Pattern:} Employed DTOs to encapsulate API payloads, isolating internal database entity models from external JSON representations.
+    \item \textbf{Repository Pattern:} Leveraged Spring Data JPA repositories to abstract database interactions behind standardized data access interfaces.
+    \item \textbf{Single-Responsibility Principle (SRP):} Refactored services so that each service class (e.g., \texttt{AuthService}, \texttt{OrderService}, \texttt{ReviewService}, \texttt{PaymentService}) manages a single cohesive domain responsibility.
+\end{itemize}
+
+\section{Professional and Collaborative Practices}
+In addition to technical programming skills, the internship fostered professional software development habits:
+\begin{itemize}[leftmargin=2.0em]
+    \item \textbf{Version Control with Git:} Followed industry-standard Git branching strategies (feature branches, pull requests, structured commit messages, and semantic versioning).
+    \item \textbf{Agile Methodology and Sprint Cadence:} Participated in weekly sprint planning, daily progress reviews, and iterative milestone deliverables under the mentorship of Dr. Anurag Shrivastava.
+    \item \textbf{Comprehensive Documentation:} Learned the critical importance of maintaining thorough technical documentation, including OpenAPI/Swagger specifications, database migration scripts, and architecture decision records (ADRs).
+\end{itemize}
+
+\section{Challenges Encountered and Technical Resolutions}
+Table~\ref{tab:challenges} summarizes the major engineering challenges encountered during the internship and the technical solutions devised.
+
+\begin{table}[H]
+\centering
+\fontsize{10.5}{14}\selectfont
+\begin{tabularx}{\textwidth}{|p{3.2cm}|X|X|}
+\hline
+\textbf{Challenge Area} & \textbf{Technical Problem Encountered} & \textbf{Applied Engineering Solution} \\
+\hline
+\textbf{Stateless JWT Token Expiration} & 
+Expired client tokens caused silent API failures and broken user interfaces. & 
+Implemented an automated Axios response interceptor that detects HTTP 401 Unauthorized status, purges stale credentials, dispatches Redux logout actions, and cleanly redirects users to login. \\
+\hline
+\textbf{Inventory Race Conditions} & 
+Concurrent checkouts on low-stock items risked overselling and negative inventory counts. & 
+Wrapped order placement within Spring \texttt{@Transactional} boundaries and utilized atomic conditional SQL updates (\texttt{WHERE stock >= :qty}) with automated rollback. \\
+\hline
+\textbf{Cross-Origin Resource Sharing (CORS)} & 
+The React frontend (port 5173) encountered CORS preflight blocking when communicating with the Spring Boot backend (port 8080). & 
+Configured a global Spring \texttt{CorsConfigurationSource} bean defining explicit allowed origins, HTTP methods (\texttt{GET}, \texttt{POST}, \texttt{PUT}, \texttt{DELETE}), and allowed headers. \\
+\hline
+\textbf{Historical Invoice Pricing} & 
+Changing a product's price in the admin catalog altered the historical totals of previously placed orders. & 
+Designed the \texttt{order\_items} table to record an immutable snapshot of the unit price at the exact moment of order placement. \\
+\hline
+\end{tabularx}
+\caption{Key Engineering Challenges and Solutions Applied During the Internship}
+\label{tab:challenges}
+\end{table}

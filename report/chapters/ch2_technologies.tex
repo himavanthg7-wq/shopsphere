@@ -1,0 +1,111 @@
+\chapter{Related Work and Technologies Used}
+\label{ch:technologies}
+
+\section{Study of Existing Systems and Limitations}
+E-commerce web architectures have evolved through three distinct evolutionary generations:
+\begin{enumerate}[leftmargin=2.0em]
+    \item \textbf{First-Generation Server-Side Rendered Monoliths (SSR):} Technologies such as PHP/Laravel, Java Servlets/JSP, or ASP.NET generated complete HTML pages on the web server for every client click. While straightforward, each user interaction triggered a full browser reload, consuming excessive network bandwidth, increasing server load, and yielding sluggish mobile user experiences.
+    \item \textbf{Second-Generation Client-Rendered SPAs with Session-Based Backends:} The emergence of early single-page application (SPA) libraries (AngularJS, Backbone.js) decoupled the UI from backend servers. However, backend architectures still relied on stateful HTTP session tracking (cookies and \texttt{JSESSIONID}). As traffic scaled, maintaining server-side session memory across distributed server nodes required complex sticky-session routing or centralized cache clusters (e.g., Redis), introducing single points of failure.
+    \item \textbf{Third-Generation Decoupled Stateless Architectures:} Modern enterprise platforms utilize component-driven client applications (React 18) communicating with completely stateless microservices or modular REST backends (Spring Boot 3) powered by cryptographic JSON Web Tokens (JWT). This architecture decouples UI rendering entirely from backend business logic, allowing each tier to scale independently, run across content delivery networks (CDNs), and sustain millions of concurrent requests with minimal server footprint.
+\end{enumerate}
+
+\section{Technology Stack Overview}
+The technology stack for \textbf{ShopSphere} was carefully selected to satisfy the rigorous demands of enterprise reliability, security, developer velocity, and maintainability. Table~\ref{tab:tech_stack} summarizes the selected technologies and their roles.
+
+\begin{table}[H]
+\centering
+\fontsize{10.5}{14}\selectfont
+\begin{tabularx}{\textwidth}{|p{3.2cm}|p{3.8cm}|X|}
+\hline
+\textbf{Layer / Domain} & \textbf{Technology Selected} & \textbf{Key Role and Engineering Justification} \\
+\hline
+\textbf{Client Framework} & React.js 18.3 & Component-based reactive UI, Virtual DOM reconciliation, and seamless single-page user experiences. \\
+\hline
+\textbf{Frontend Build} & Vite 5.4 & Extremely fast Hot Module Replacement (HMR) and optimized rollup production bundling. \\
+\hline
+\textbf{State Management} & Redux Toolkit 2.2 & Centralized, immutable store for authenticated sessions, shopping cart contents, and customer wishlists. \\
+\hline
+\textbf{Routing \& Styling} & React Router v6 \& Tailwind CSS & Declarative client-side routing, protected route guards, and utility-first responsive styling. \\
+\hline
+\textbf{Backend Runtime} & Java 22 (OpenJDK) & High-performance, strongly-typed object-oriented language with modern pattern matching and memory optimizations. \\
+\hline
+\textbf{Application Framework} & Spring Boot 3.3.4 & Enterprise-grade framework providing dependency injection, embedded Tomcat server, and rapid API development. \\
+\hline
+\textbf{Security Engine} & Spring Security 6 \& JWT & Stateless authentication filter pipeline, BCrypt password hashing, and granular Role-Based Access Control (RBAC). \\
+\hline
+\textbf{Persistence Layer} & Spring Data JPA \& Hibernate 6 & Object-Relational Mapping (ORM), automated query generation, connection pooling, and transactional boundaries. \\
+\hline
+\textbf{Relational Database} & MySQL 8.0 & ACID-compliant relational database, normalized to 3NF across 19 tables with explicit foreign key constraints. \\
+\hline
+\textbf{Payment Gateway} & Razorpay Standard Checkout & PCI-DSS compliant payment processing with server-side HMAC-SHA256 signature verification. \\
+\hline
+\textbf{Asset Management} & Cloudinary CDN & Cloud-based media storage and dynamic optimization for high-resolution product imagery. \\
+\hline
+\end{tabularx}
+\caption{Comprehensive Technology Stack Architecture for ShopSphere}
+\label{tab:tech_stack}
+\end{table}
+
+\section{Frontend Engineering Architecture}
+The frontend application was developed using \textbf{React.js 18}, leveraging modern functional component paradigms and React Hooks (\texttt{useState}, \texttt{useEffect}, \texttt{useSelector}, \texttt{useDispatch}, and \texttt{useNavigate}).
+
+\subsection{State Management with Redux Toolkit}
+In complex e-commerce applications, state changes in one part of the user interface (e.g., adding an item to the cart on a product card) must immediately reflect across distinct, non-adjacent components (e.g., updating the cart counter badge in the navigation header, recalculating prices in the cart drawer). \textbf{Redux Toolkit} was integrated to establish a centralized, immutable store structured into dedicated slices:
+\begin{itemize}[leftmargin=2.0em]
+    \item \texttt{authSlice}: Tracks customer authentication status, JWT bearer token, user profile metadata, and administrative privileges (\texttt{isAdmin}).
+    \item \texttt{cartSlice}: Manages client-side cart items, quantity modifications, subtotal calculations, applied coupon discounts, and persistence to \texttt{localStorage}.
+    \item \texttt{wishlistSlice}: Manages saved items and coordinates 1-click transfers between the wishlist and cart.
+\end{itemize}
+
+\subsection{Client-Side Routing and Route Guards}
+\textbf{React Router v6} provides client-side navigation without triggering full-page server round-trips. Two specialized higher-order route guard components were engineered:
+\begin{itemize}[leftmargin=2.0em]
+    \item \texttt{ProtectedRoute}: Inspects the Redux authentication state. Unauthenticated users attempting to access checkout, profile, or order history pages are redirected to the login view, with the attempted destination saved in routing state to enable automatic post-login return.
+    \item \texttt{AdminRoute}: Enforces administrative privileges by verifying the presence of \texttt{ROLE\_ADMIN} in the user's decoded token claims. Non-admin users attempting to access administrative routes are blocked and redirected to the home storefront.
+\end{itemize}
+
+\subsection{HTTP Client with Axios Interceptors}
+Communication with the backend REST APIs is orchestrated through a configured \textbf{Axios} instance. An automated request interceptor intercepts outgoing HTTP calls and dynamically injects the authorization header:
+\begin{quote}
+\texttt{Authorization: Bearer <JWT\_TOKEN>}
+\end{quote}
+A corresponding response interceptor monitors incoming HTTP status codes. If an HTTP 401 (Unauthorized) status is received due to token expiration, the interceptor automatically clears the client storage, dispatches a logout action to Redux, and prompts the user to re-authenticate.
+
+\section{Backend Engineering Architecture}
+The backend service was architected on \textbf{Java 22} and \textbf{Spring Boot 3.3.4}, adhering to the classic three-layer architectural pattern: Controller layer, Service layer, and Data Access (Repository) layer.
+
+\subsection{Spring MVC and RESTful Design Principles}
+The controller layer exposes uniform RESTful endpoints utilizing standard HTTP verbs (\texttt{GET}, \texttt{POST}, \texttt{PUT}, \texttt{DELETE}) and consistent JSON request/response contracts. Data transfer objects (\textbf{DTOs}) decouple internal database entity models from external API contracts, preventing unintended exposure of internal schema structures. Request payloads are validated at the controller boundary using Jakarta Validation annotations (\texttt{@NotNull}, \texttt{@NotBlank}, \texttt{@Size}, \texttt{@Min}).
+
+\subsection{Spring Data JPA and Hibernate ORM}
+Data persistence is handled by \textbf{Spring Data JPA} backed by \textbf{Hibernate 6}. Entities are mapped directly to MySQL tables using JPA annotations (\texttt{@Entity}, \texttt{@Table}, \texttt{@Id}, \texttt{@GeneratedValue}, \texttt{@ManyToOne}, \texttt{@OneToMany}). Complex relational queries are expressed declaratively through Spring Data repository interfaces or parameterized JPQL queries, minimizing boilerplate JDBC code and preventing SQL injection vulnerabilities. Connection pooling is managed by \textbf{HikariCP}, providing fast connection checkout and low-latency database throughput.
+
+\section{Security Architecture and JWT Authentication}
+Security in ShopSphere is powered by \textbf{Spring Security 6}, configured for completely stateless session management using \texttt{SessionCreationPolicy.STATELESS}.
+
+\subsection{BCrypt Password Hashing}
+User passwords are never stored in plaintext. During registration, passwords are processed through the \textbf{BCrypt} strong hashing function with 10 salt rounds:
+\begin{equation}
+\text{Hash} = \text{BCrypt}(\text{PlainPassword}, \text{Salt}_{10})
+\end{equation}
+BCrypt incorporates a cryptographic salt to protect against rainbow table attacks and employs an adaptive work factor that remains resilient against hardware-accelerated brute-force attacks.
+
+\subsection{Stateless JWT Lifecycle}
+The authentication workflow follows an industry-standard token-based pipeline:
+\begin{enumerate}[leftmargin=2.0em]
+    \item The client submits credentials to the \texttt{/api/auth/login} endpoint.
+    \item Spring Security's \texttt{AuthenticationManager} validates the credentials against the BCrypt hash stored in the \texttt{users} table.
+    \item Upon successful verification, the \texttt{JwtTokenProvider} generates an HMAC-SHA256 signed JSON Web Token containing user ID, email address, role claims (\texttt{ROLE\_CUSTOMER}, \texttt{ROLE\_ADMIN}), and an expiration duration of 24 hours.
+    \item The client persists the token and presents it in the \texttt{Authorization} header for all subsequent protected API calls.
+    \item A custom \texttt{JwtAuthenticationFilter} intercepts every incoming request, validates the cryptographic signature, extracts the user claims, and establishes the authenticated principal in the Spring \texttt{SecurityContextHolder}.
+\end{enumerate}
+
+\section{Database and Transaction Management}
+Data integrity is maintained by \textbf{MySQL 8.0}. The database schema is fully normalized into 19 tables adhering strictly to \textbf{Third Normal Form (3NF)}, eliminating data redundancy, update anomalies, and deletion inconsistencies. All database modifications during multi-step business operations (such as order checkout and inventory deduction) are enclosed within declarative Spring \texttt{@Transactional} boundaries, ensuring absolute adherence to \textbf{ACID} principles (Atomicity, Consistency, Isolation, and Durability).
+
+\section{External Integrations}
+\subsection{Razorpay Payment Gateway}
+ShopSphere integrates the \textbf{Razorpay} payment gateway to support diverse online payment modalities, including credit/debit cards, Unified Payments Interface (UPI), and net banking. Rather than relying on insecure client-side confirmations, the platform enforces server-side cryptographic signature validation.
+
+\subsection{Cloudinary Media CDN}
+Product visual assets are stored and distributed via the \textbf{Cloudinary} content delivery network. Cloudinary provides high-speed image delivery, responsive image resizing, and automatic format conversion (WebP/AVIF), ensuring rapid page load times across mobile and desktop connections.
